@@ -8,7 +8,7 @@ st.title("CSV Data Visualization App")
 # Load data
 site_data = pd.read_csv('./Water_Data_Clean1.csv') 
 
-if uploaded_file is not None:
+if site_data is not None:
     # Read the CSV file
     data = pd.read_csv(site_data)
     st.write("### Data Preview")
