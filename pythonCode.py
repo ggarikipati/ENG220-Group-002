@@ -6,11 +6,10 @@ import matplotlib.pyplot as plt
 st.title("CSV Data Visualization App")
 
 # Load data
-site_data = pd.read_csv('./Water_Data_Clean1.csv') 
+data = pd.read_csv('./Water_Data_Clean1.csv') 
 
-if site_data is not None:
+if data is not None:
     # Read the CSV file
-    data = pd.read_csv(site_data)
     st.write("### Data Preview")
     st.dataframe(data)
 
