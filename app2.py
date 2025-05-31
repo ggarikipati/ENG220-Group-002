@@ -3,7 +3,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Title of the app
-st.title("CSV Data Visualization App")
+st.title("Group-002")
+
+st.markdown("""
+### Water Quality Trends in New Mexico (2020–2023)
+
+This project analyzes water quality reports across the state of **New Mexico**, focusing on data collected between **2020 and 2023**.  
+We examine contaminant levels over time to understand how water quality is changing and whether it's improving or declining.  
+Through this trend analysis, we aim to identify potential contributing variables and actions that lead to improved water quality outcomes across the state.
+""")
 
 # Load data
 data = pd.read_csv('./Water_Data_Clean1.csv') 
