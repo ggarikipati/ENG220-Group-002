@@ -1,6 +1,10 @@
+# -*- coding: utf-8 -*-
+# Group 002 Streamlit Visualization App
+
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 
 # Title of the app
 st.title("Group-002")
@@ -13,12 +17,13 @@ We examine contaminant levels over time to understand how water quality is chang
 Through this trend analysis, we aim to identify potential contributing variables and actions that lead to improved water quality outcomes across the state.
 """)
 
-# Load data
-data = pd.read_csv('./Water_Data_Clean1.csv') 
+try:
+    # Read CSV relative to this script's directory
+    current_dir = os.path.dirname(__file__)
+    csv_path = os.path.join(current_dir, 'Water_Data_Clean1.csv')
+    data = pd.read_csv(csv_path)
 
-if data is not None:
-    # Read the CSV file
-    st.write("### Data Preview")
+    st.subheader("Data Preview")
     st.dataframe(data)
 
     # Dropdown for selecting columns
@@ -27,10 +32,7 @@ if data is not None:
     y_column = st.selectbox("Select Y-axis column", columns)
 
     # Dropdown for graph type
-    graph_type = st.selectbox(
-        "Select Graph Type",
-        ["Line", "Scatter", "Bar", "Pie"]
-    )
+    graph_type = st.selectbox("Select Graph Type", ["Line", "Scatter", "Bar", "Pie"])
 
     # Plot button
     if st.button("Plot Graph"):
@@ -39,35 +41,41 @@ if data is not None:
         if graph_type == "Line":
             ax.plot(data[x_column], data[y_column], marker='o')
             ax.set_title(f"{y_column} vs {x_column} (Line Plot)")
+            ax.set_xlabel(x_column)
+            ax.set_ylabel(y_column)
+            st.pyplot(fig)
 
         elif graph_type == "Scatter":
             ax.scatter(data[x_column], data[y_column])
             ax.set_title(f"{y_column} vs {x_column} (Scatter Plot)")
+            ax.set_xlabel(x_column)
+            ax.set_ylabel(y_column)
+            st.pyplot(fig)
 
         elif graph_type == "Bar":
             ax.bar(data[x_column], data[y_column])
             ax.set_title(f"{y_column} vs {x_column} (Bar Chart)")
-
-        elif graph_type == "Pie":
-            # Pie chart only makes sense for single-column data
-            if len(data[x_column].unique()) <= 10:  # Limit to 10 unique categories for readability
-                plt.pie(
-                    data[y_column],
-                    labels=data[x_column],
-                    autopct='%1.1f%%',
-                    startangle=90,
-                )
-                plt.title(f"{y_column} (Pie Chart)")
-            else:
-                st.error("Pie chart requires fewer unique categories in the X-axis.")
-
-        if graph_type != "Pie":
             ax.set_xlabel(x_column)
             ax.set_ylabel(y_column)
             st.pyplot(fig)
-        else:
-            st.pyplot(plt)
 
-    st.write("Tip: Ensure the selected columns are numeric for meaningful plots.")
-else:
-    st.info("Please upload a CSV file to get started.") 
+        elif graph_type == "Pie":
+            if len(data[x_column].unique()) <= 10:
+                pie_labels = data[x_column].astype(str)
+                pie_values = data[y_column]
+                fig, ax = plt.subplots()
+                ax.pie(
+                    pie_values,
+                    labels=pie_labels,
+                    autopct='%1.1f%%',
+                    startangle=90
+                )
+                ax.set_title(f"{y_column} Distribution (Pie Chart)")
+                st.pyplot(fig)
+            else:
+                st.error("Pie chart requires fewer than 10 unique categories in the X-axis.")
+
+    st.info("Tip: Ensure selected columns are numeric for meaningful plots.")
+
+except FileNotFoundError:
+    st.error("CSV file not found. Please ensure 'Water_Data_Clean1.csv' is placed in the same directory as this script.")
